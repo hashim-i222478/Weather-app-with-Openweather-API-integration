@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Five Days Weather Forecast</title>
+    <link rel="stylesheet" href="Tables.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>The Weather Co.</h2>
+        <img src="icon.png" id="sidebar_icon">
+        <nav>
+            <a href="Dashboard.html">Dashboard</a>
+            <a href="Tables.html">Tables</a>
+        </nav>     
+    </div>
+
+    <div class="main-content">
+
+        <div class="Search-bar">
+            <h2>Search the Weather Forecast</h2><br>
+            <input type="text" id="city" placeholder="Enter City Name to get 5 day forecast">
+            <button id="btn" onclick="search_city()">Search</button>
+        </div>
+
+        <div class="weather-table">
+            <h2>Five Days Weather Forecast</h2>
+            <div class="sorting-menu">
+            <label for="sort-options">Sort/Filter:</label>
+            <select id="sort-options" onchange="apply_filter()">
+                <option value="asc">Show temperatures in ascending order</option>
+                <option value="desc">Show temperatures in descending order</option>
+                <option value="rain">Filter out days without rain</option>
+                <option value="highest">Show the day with the highest temperature</option>
+            </select>
+            </div>
+            <table id="forecast_table">
+            <thead>
+                <tr>
+                <th>Day</th>
+                <th>Temperature</th>
+                <th>Weather</th>
+                <th>Humidity</th>
+                <th>Wind Speed</th>
+                </tr>
+            </thead>
+            
+            <tbody id="table_body">
+
+            </tbody>
+            </table>
+
+            <div class="pagination">
+                <button id="prev" onclick="prevPage()">Previous</button>
+                <button id="next" onclick="nextPage()">Next</button>
+            </div>
+        </div>
+          
+        
+
+        <div class="chatbot-icon" onclick="open_close_chatbot()">
+            <img src="chat.png">
+        </div>
+        <div class="chatbot" id="chatbot" style="display: none;">
+            <div class="chatbot-header">
+            <h2>Chatbot</h2>
+            <button class="close-btn" onclick="open_close_chatbot()">X</button>
+            </div>
+            <div class="chatbox" id="chatbox">
+            <div class="chat" id="chat">
+                <p>Ask me anything</p>
+            </div>
+            </div>
+            <input type="text" id="question" placeholder="Ask me anything related to weather">
+            <button id="ask" onclick="Send_chat()">Send Chat</button>
+        </div>
+        <script>
+            function open_close_chatbot() {
+                var chatbot = document.getElementById('chatbot');
+                if (chatbot.style.display === 'none' || chatbot.style.display === '') {
+                    chatbot.style.display = 'block';
+                    chatbot.style.animation = 'fadeIn 0.5s';
+                } else {
+                    chatbot.style.animation = 'fadeOut 0.5s';
+                    setTimeout(function() {
+                        chatbot.style.display = 'none';
+                    }, 500);
+                }
+            }
+            var style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes fadeOut {
+                    from { opacity: 1; }
+                    to { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        </script>
+                    
+
+    </div>
+         
+    <script src="table.js"></script>
+
+</body>
+</html>

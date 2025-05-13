@@ -1,0 +1,477 @@
+
+body {
+    display: flex;
+    flex-direction: row;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    height: 100vh;
+    background: #62b1f6;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    background: #2088f6;
+    flex-direction: column;
+    color: rgb(238, 230, 8);
+    padding: 20px;
+    width: 250px;
+    height: 100vh;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
+    text-align: center;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.sidebar h2 {
+    margin-top: 0;
+    text-shadow: 2px 2px 4px #292929;
+}
+
+.sidebar img {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.sidebar nav a {
+    color: rgb(238, 230, 8);
+    text-decoration: none;
+    display: flex;
+    padding: 10px 0;
+    border-bottom: 1px solid #0056b3;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 18px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.sidebar nav a:hover {
+    background: #0056b3;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 250px);
+    padding: 20px;
+    box-sizing: border-box;
+    margin-left: 250px; 
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+    text-align: center;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+#forecast_table {
+    display: table;
+    width: 100%; /* Adjusted for responsiveness */
+    background-color: #2187f5;
+    align-items: center;
+    border-radius: 10px;
+    text-align: center;
+    table-layout: fixed;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    margin: 20px 0; /* Adjusted for responsiveness */
+
+    /*make it a little zoom when mouse comes over it*/
+    transition: transform 0.2s;
+
+    
+
+}
+
+#forecast_table th, #forecast_table td {
+    padding: 10px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+#forecast_table th {
+    color: rgb(238, 230, 8);
+    background-color: #015fc3;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#forecast_table td {
+    color: rgb(242, 252, 154);
+    font-size: 18px;
+}
+
+#sidebar_icon {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    background: #3093fc;
+}
+
+.weather-table {
+    display: flex;
+    flex-direction: column;
+    background: #1273da;
+    color: rgb(238, 230, 8);
+    margin-left: 35px;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    height: auto;
+    text-align: center;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.weather-table h2 {
+    margin-top: 0;
+    text-shadow: 2px 2px 4px #292929;
+}
+
+.pagination #next, .pagination #prev {
+    background: #7fbcfe;
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+    font-style: italic;
+    font-size: 15px;
+    text-decoration: none;
+    margin: 0 10px; 
+}
+
+.pagination #next:hover, .pagination #prev:hover {
+    background: #0056b3;
+    color: white;
+}   
+
+.main-content .Search-bar {
+    display: flex;
+    width: 90%;
+    flex-direction: column;
+    justify-content: center;
+    margin: 20px;
+    margin-left: 35px;
+    background: #1273da;
+    align-items: center;
+    border-radius: 10px;
+    color: rgb(238, 230, 8);
+    text-shadow: 2px 2px 4px #292929;
+    padding: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.main-content .Search-bar input {
+    width: 40%;
+    margin-bottom: 25px;
+    height: 50px;
+    font-size: 18px;
+    border-radius: 10px;
+    background-color: #57a5f8;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.main-content .Search-bar input::placeholder {
+    color: #535252;
+    text-align: center;
+    font-size: 18px;
+    font-style: italic;
+}
+
+.main-content .Search-bar input:hover {
+    background: #88c1ff;
+}
+
+#btn {
+    background: #7fbcfe;
+    color: black;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+#btn:hover {
+    background: #0056b3;
+    color: white;
+}
+
+
+.sorting-menu label {
+    margin-right: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.sorting-menu select {
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 16px;
+    background-color: #57a5f8;
+    color: #000;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.sorting-menu select:hover {
+    background: #88c1ff;
+}
+
+.chatbot-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 70px;
+    height: 70px;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    background-color: #1273da;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chatbot-icon img {
+    width: 80%;
+    height: 80%;
+}
+
+.chatbot {
+
+    margin-bottom: 20px;
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 300px;
+    max-height: 400px;
+    background: #2187f5;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Make it scrollable */
+}
+
+.chatbot-header {
+    position: fixed;    
+    width: 280px;
+
+    background: #015fc3;
+    color: rgb(238, 230, 8);
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+.chatbot-header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.chatbot-header .close-btn {
+    background: none;
+    border: none;
+    color: rgb(0, 0, 0);
+    font-size: 18px;
+    cursor: pointer;
+
+}
+
+.chatbox {
+    margin-top: 50px;
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    color: rgb(242, 252, 154);
+}
+
+.chatbox .chat {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #1273da;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.chatbox .chat p {
+    margin: 0;
+
+}
+
+#question {
+    width: calc(100% - 40px);
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    background: #7fbcfe;
+}
+
+#question::placeholder {
+    color: #535252;
+    font-style: italic;
+}
+
+#question:hover {
+    background: #afd6ff;
+}
+
+#ask {
+    background: #7fbcfe;
+    color: black;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+#ask:hover {
+    background: #0056b3;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+        height: 100%;
+    }
+
+    .sidebar h2 {
+        font-size: 18px;
+    }
+
+    .sidebar img {
+        width: 30%;
+        align-self: center;
+    }
+
+    .main-content {
+        width: calc(100% - 200px);
+        margin-left: 200px;
+        padding: 5px;
+        font-size: 12px;
+    }
+
+    .weather-table, .main-content .Search-bar {
+        width: 90%;
+        margin-left: 10px;
+    }
+
+    #forecast_table th, #forecast_table td {
+        padding: 5px;
+        font-size: 12px;
+        overflow-x: auto;
+    }
+
+    .chatbot {
+        width: 250px;
+    }
+
+    .chatbot-header {
+        width: 230px;
+    }
+
+    .sorting-menu select {
+        width: 90%;
+        height: 35px;
+        text-wrap: normal;
+        margin-top: 10px;
+        font-size: 13px;
+    }
+
+    #question {
+        height: 30px;
+        padding: 5px;
+    }
+    
+}
+
+@media (max-width: 480px) {
+    body {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .main-content {
+        width: 100%;
+        margin-left: 0;
+        padding: 5px;
+    }
+
+    .weather-table, .main-content .Search-bar {
+        width: 97%;
+        margin-bottom: 10px;
+        padding: 5px;
+        margin-top: 10px;
+        margin-left: 0;
+        margin-right: 10px;
+    }
+
+    #question {
+        
+        height: 20px;   
+    }
+
+    #ask {
+        padding: 5px;
+        font-size: 12px;
+    }
+    
+    
+    #forecast_table th, #forecast_table td {
+        padding: 5px;
+        font-size: 12px;
+        overflow-x: auto;
+    }
+
+    .chatbot {
+        width: 90%;
+        bottom: 0;
+        right: 0;
+        max-height: 50%;
+    }
+
+    .sorting-menu select {
+        width: 90%;
+        text-wrap: normal;
+        margin-top: 10px;
+        font-size: 12px;
+    }
+
+    .chatbot-header {
+        width: calc(90% - 20px);
+    }
+
+}
