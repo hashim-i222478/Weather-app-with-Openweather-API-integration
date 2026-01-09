@@ -1,440 +1,231 @@
-//add hover effect to the button and toggleTemp button
-function add_hover_effect() { 
-  
-    let button = document.getElementById('btn');
-    button.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
+// Global state for unit toggling
+let currentCelsius = 0;
 
-    let toggleTempBtn = document.getElementById('toggleTemp');
+document.addEventListener('DOMContentLoaded', () => {
+    // Set initial date
+    updateDate();
+    // Default search
+    document.getElementById('city').value = 'London';
+    get_Weather_details();
+    get_forecast();
+});
 
-
-    button.addEventListener('mouseover', function() {
-        button.style.backgroundColor = '#808080';
-        
-    });
-
-    button.addEventListener('mouseout', function() {
-        button.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
-       
-    });
-
-
-    toggleTempBtn.addEventListener('mouseover', function() {
-        toggleTempBtn.style.backgroundColor = '#808080';
-        
-    }
-    );
-
-    toggleTempBtn.addEventListener('mouseout', function() {
-        toggleTempBtn.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
-        
-    }
-);
+function updateDate() {
+    const dateElement = document.getElementById('date-time');
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const today = new Date();
+    dateElement.innerText = today.toLocaleDateString('en-US', options);
 }
 
-//get the weather details of the city
-function get_Weather_details() {
+function toggleTemperature() {
+    const tempElement = document.getElementById('temp');
+    const toggleBtn = document.getElementById('toggleTemp');
+    const spans = toggleBtn.getElementsByTagName('span');
 
-    let city_name = document.getElementById('city').value;
-    let api_key = '6235f3a1d357b365fc3db88b6dd6caa2';
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${api_key}`;
+    if (tempElement.innerText.includes('°C')) {
+        let fahrenheit = (currentCelsius * 9 / 5) + 32;
+        tempElement.innerText = fahrenheit.toFixed(1) + '°F';
+        spans[0].classList.remove('active-unit');
+        spans[1].classList.add('active-unit');
+    } else {
+        tempElement.innerText = currentCelsius.toFixed(1) + '°C';
+        spans[1].classList.remove('active-unit');
+        spans[0].classList.add('active-unit');
+    }
+}
+
+function get_Weather_details() {
+    const city_name = document.getElementById('city').value;
+    const api_key = '6235f3a1d357b365fc3db88b6dd6caa2';
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${api_key}`;
 
     fetch(url)
         .then(response => {
-            if (!response.ok) { //if the response is not ok, alert the user that the city is not found
+            if (!response.ok) {
                 alert('City not found');
                 throw new Error("City not found");
             }
             return response.json();
         })
-        .then(data => { //if the response is ok, get the data and display the weather details
-            console.log(data);
-            let city = document.getElementById("city-name");
-            city.innerText = 'City Name: ' + data.name;
+        .then(data => {
+            // Update Text Elements
+            document.getElementById("city-name").innerText = data.name;
 
-            let temp = document.getElementById("temp");
-            let celsius = data.main.temp - 273.15;
-            temp.innerHTML = 'Temperature: ' + celsius.toFixed(2) + '°C';
+            // Temperature
+            currentCelsius = data.main.temp - 273.15;
+            document.getElementById("temp").innerText = currentCelsius.toFixed(1) + '°C';
 
-            let humidity = document.getElementById("humidity");
-            humidity.innerHTML = 'Humidity: ' + data.main.humidity + '%';
+            // Details
+            document.getElementById("humidity").innerText = data.main.humidity + '%';
+            document.getElementById("wind").innerText = data.wind.speed + ' m/s';
 
-            let wind_speed = document.getElementById("wind");
-            wind_speed.innerHTML = 'Wind Speed: ' + data.wind.speed + 'm/s';
+            // Weather Condition & Icon
+            const description = data.weather[0].description;
+            const mainCondition = data.weather[0].main;
+            document.getElementById("weather").innerText = description.charAt(0).toUpperCase() + description.slice(1);
 
-            let weather_desc = document.getElementById("weather");
-            weather_desc.innerHTML = 'Weather: ' + data.weather[0].description;
+            const iconElement = document.getElementById("icon");
+            iconElement.src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
+            iconElement.classList.remove('hidden');
 
-            let weather_icon = document.getElementById("icon");
-            weather_icon.src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
-
-            let weather_widget = document.getElementsByClassName('weather-widget');
-           
-            
-            weather_widget[0].style.boxShadow = '0 4px 8px 0 rgba(1, 20, 44, 0.2)';
-
-            //when the mouse is over the widget, zoom in the widget
-            weather_widget[0].onmouseover = function() {
-                weather_widget[0].style.transform = 'scale(1.01)';
-            }
-
-            //when the mouse is out of the widget, zoom out the widget
-            weather_widget[0].onmouseout = function() {
-                weather_widget[0].style.transform = 'scale(1)';
-            }
-
-            let weather = data.weather[0].main;
-            let input = document.getElementById('city');
-            let button = document.getElementById('btn');
-            let toggleTempBtn = document.getElementById('toggleTemp');
-
-            //change the background of the widget based on the weather condition
-            if (weather_desc.innerHTML.includes('rain')) {
-                weather_widget[0].style.backgroundImage = 'url(rain.jpg)';
-                weather_widget[0].style.backgroundSize = 'cover';
-                weather_widget[0].style.color = 'white';
-                
-                input.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
-                
-                button.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
-
-                toggleTempBtn.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
-
-                add_hover_effect();
-
-            } 
-            else if (weather_desc.innerHTML.includes('cloud')) {
-                weather_widget[0].style.backgroundImage = 'url(cloud.jpg)';
-                weather_widget[0].style.backgroundSize = 'cover';
-                weather_widget[0].style.color = 'white';
-               
-                input.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
-              
-                button.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
-
-                toggleTempBtn.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
-
-
-                add_hover_effect();
-
-            } 
-            else if (weather_desc.innerHTML.includes('clear')) {
-                weather_widget[0].style.backgroundImage = 'url(clearsky.jpg)';
-                weather_widget[0].style.backgroundSize = 'cover';
-                weather_widget[0].style.color = 'rgb(238, 230, 8)';
-                
-                input.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
-               
-                button.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
-
-                toggleTempBtn.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
-
-                add_hover_effect();
-            } 
-            else if (weather_desc.innerHTML.includes('snow')) {
-                weather_widget[0].style.backgroundImage = 'url(snow.jpeg)';
-                weather_widget[0].style.backgroundSize = 'cover';
-                weather_widget[0].style.color = 'black';
-                
-                input.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
-                
-                button.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
-
-                toggleTempBtn.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
-
-                add_hover_effect();
-            } 
-            else if (weather_desc.innerHTML.includes('mist') || weather_desc.innerHTML.includes('fog')) {
-                weather_widget[0].style.backgroundImage = 'url(mist.jpg)';
-                weather_widget[0].style.backgroundSize = 'cover';
-                weather_widget[0].style.color = 'rgb(238, 230, 8)';
-                
-                input.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
-                
-                button.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
-
-                toggleTempBtn.style.backgroundColor = 'rgba(192, 199, 202, 0.5)';
-              
-               add_hover_effect();
-
-
-            } 
-            else if (weather_desc.innerHTML.includes('haze')) {
-               
-                weather_widget[0].style.backgroundColor = '#e0e7ea';
-                weather_widget[0].style.backgroundImage = 'url(haze.jpeg)';
-                weather_widget[0].style.backgroundSize = 'cover';
-                weather_widget[0].style.color = 'black';
-                
-                input.style.backgroundColor = '#c0c7ca';
-                
-                button.style.backgroundColor = '#c0c7ca';
-
-                toggleTempBtn.style.backgroundColor = '#c0c7ca';
-
-                add_hover_effect();
-            } 
-            else {
-                weather_widget[0].style.backgroundColor = 'lightblue';
-                weather_widget[0].style.color = 'black';
-               
-                input.style.backgroundColor = '#9edefa';
-                button.style.backgroundColor = '#9edefa';
-
-                toggleTempBtn.style.backgroundColor = '#9edefa';
-
-                add_hover_effect();
-            }
-
-            //toggle between celsius and fahrenheit
-            document.getElementById('toggleTemp').addEventListener('click', function() {
-                if (temp.innerHTML.includes('°C')) {
-                    let fahrenheit = (celsius * 9 / 5) + 32;
-                    temp.innerHTML = 'Temperature: ' + fahrenheit.toFixed(2) + '°F';
-                } else {
-                    temp.innerHTML = 'Temperature: ' + celsius.toFixed(2) + '°C';
-                }
-            }
-            );
-            
-
+            // Theme Switching
+            updateTheme(description);
         })
-        .catch(error => { //if there is an error, log the error
-            console.log(error);
-        })
-
-
+        .catch(error => console.error(error));
 }
 
-//get the forecast of the city
+function updateTheme(description) {
+    const body = document.body;
+    body.className = ''; // Reset classes
+
+    if (description.includes('rain') || description.includes('drizzle')) {
+        body.classList.add('rain-theme');
+    } else if (description.includes('cloud')) {
+        body.classList.add('cloud-theme');
+    } else if (description.includes('clear')) {
+        body.classList.add('clear-theme');
+    } else {
+        // Default fallback
+        body.classList.add('cloud-theme');
+    }
+}
+
 function get_forecast() {
-    
-    let city_name = document.getElementById('city').value;
-    let api = '6235f3a1d357b365fc3db88b6dd6caa2'; //api key
-    let url = `https://api.openweathermap.org/data/2.5/forecast?q=${city_name}&appid=${api}`;
+    const city_name = document.getElementById('city').value;
+    const api_key = '6235f3a1d357b365fc3db88b6dd6caa2';
+    const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city_name}&appid=${api_key}`;
 
     fetch(url)
-        .then(response => { 
-            if (!response.ok) { //if the response is not ok, alert the user that the city is not found
-                alert('City not Found!!');
-                throw new Error('Error');
+        .then(response => {
+            if (!response.ok) throw new Error('Error fetching forecast');
+            return response.json();
+        })
+        .then(data => {
+            const forecastData = data.list;
+            // Get 5 days forecast (approximate by taking every 8th item (24hrs))
+            const filteredData = forecastData.filter((_, index) => index % 8 === 0).slice(0, 5);
+
+            const dates = [];
+            const temps = [];
+            const weatherConditions = {};
+
+            filteredData.forEach(entry => {
+                const date = new Date(entry.dt_txt).toLocaleDateString('en-US', { weekday: 'short' });
+                dates.push(date);
+                temps.push((entry.main.temp - 273.15).toFixed(1));
+
+                const condition = entry.weather[0].main;
+                weatherConditions[condition] = (weatherConditions[condition] || 0) + 1;
+            });
+
+            updateCharts(dates, temps, weatherConditions);
+        })
+        .catch(error => console.error(error));
+}
+
+// Chart Instances
+let tempChartInstance = null;
+let doughnutChartInstance = null;
+let lineChartInstance = null;
+
+function updateCharts(dates, temps, weatherConditions) {
+    // Colors matching CSS variables
+    const accentSecondary = '#08d9d6';
+    const accentColor = '#ff2e63';
+
+    // Common Chart Options
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                labels: { color: 'rgba(255,255,255,0.8)', font: { family: 'Inter' } }
             }
-            return response.json(); //if the response is ok, return the response in json format
-        })
-        .then(data => { //if the response is ok, get the data and display the forecast
-            let forecastData = data.list;
-            //filter the forecast data to get the forecast for the next five days
-            let filteredData = forecastData.filter((entry, index) => index % 8 === 0).slice(0, 5);
-
-            let dates = []; //array to store the dates
-            let temps = []; //array to store the temperatures
-            let weatherConditions = {}; //object to store the weather conditions
-
-            filteredData.forEach(entry => { //loop through the filtered data and get the dates, temperatures and weather conditions
-                let date = new Date(entry.dt_txt).toLocaleDateString(); 
-                dates.push(date); 
-                temps.push(entry.main.temp - 273.15);
-
-                let condition = entry.weather[0].main;
-                if (weatherConditions[condition]) { //if the weather condition is already in the object, increment the value by 1
-                    weatherConditions[condition]++;
-                } else {
-                    weatherConditions[condition] = 1;
-                }
-            });
-
-            let temperature_chart = document.getElementById('tempChart').getContext('2d'); //get the context of the canvas element
-            new Chart(temperature_chart, { //create a new chart
-                type: 'bar',
-                data: {
-                    labels: dates,
-                    datasets: [{ //create a dataset
-                        label: 'Five Days Temperature (°C)',
-                        data: temps,
-                        backgroundColor: '#007BFF',
-                        borderColor: 'black',
-                        borderWidth: 1
-                    }]
-                },
-                options: { //set the options for the chart
-                    animation: {
-                        delay: 1000 //delay the animation by 1 second
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true //begin the y-axis at zero
-                        }
-                    },
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    aspectRatio: 1.5
-                }
-            });
-
-            //create a doughnut chart
-            let doughnut_chart = document.getElementById('doughnutChart').getContext('2d');
-            new Chart(doughnut_chart, {
-                type: 'doughnut',
-                data: { //set the data for the doughnut chart
-                    labels: Object.keys(weatherConditions),
-                    datasets: [{
-                        data: Object.values(weatherConditions), //set the data for the doughnut chart
-                        backgroundColor: [ //set the background color for the doughnut chart
-                            '#FF6384',
-                            '#36A2EB',
-                            '#FFCE56',
-                            '#4BC0C0',
-                            '#9966FF',
-                            '#FF9F40'
-                        ],
-                        borderColor: [
-                            '#FF6384',
-                            '#36A2EB',
-                            '#FFCE56',
-                            '#4BC0C0',
-                            '#9966FF',
-                            '#FF9F40'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: { //set the options for the doughnut chart
-                    animation: {
-                        delay: 1000
-                    },
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    aspectRatio: 1.5
-                }
-            });
-
-            //create a line chart
-            let line_chart = document.getElementById('lineChart').getContext('2d');
-            new Chart(line_chart, { //create a new chart
-                type: 'line',
-                data: {
-                    labels: dates,
-                    datasets: [{
-                        label: 'Temperature (°C)',
-                        data: temps,
-                        backgroundColor: '#007BFF',
-                        borderColor: '#007BFF',
-                        borderWidth: 1,
-                        fill: false
-                    }]
-                },
-                options: {
-                    animation: {
-                        drop: true
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    },
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    aspectRatio: 1.5
-                }
-            });
-
-           //add the charts to the charts_container div
-
-        let chartsContainer = document.getElementsByClassName('charts_container')[0];
-        chartsContainer.style.width = '33.3%';
-        
-        let tempChart = document.getElementById('tempChart');
-        let doughnutChart = document.getElementById('doughnutChart');
-        let lineChart = document.getElementById('lineChart');
-
-        tempChart.style.backgroundColor = 'white';
-        doughnutChart.style.backgroundColor = 'white';
-        lineChart.style.backgroundColor = 'white';
-
-        tempChart.style.boxShadow = '0 4px 8px 0 rgba(1, 20, 44, 0.2)';
-        doughnutChart.style.boxShadow = '0 4px 8px 0 rgba(1, 20, 44, 0.2)';
-        lineChart.style.boxShadow = '0 4px 8px 0 rgba(1, 20, 44, 0.2)';
-
-        //when the mouse is over the chart, zoom in the chart
-        tempChart.onmouseover = function() {
-            tempChart.style.transform = 'scale(1.01)';
+        },
+        scales: {
+            x: {
+                ticks: { color: 'rgba(255,255,255,0.7)' },
+                grid: { color: 'rgba(255,255,255,0.05)' }
+            },
+            y: {
+                ticks: { color: 'rgba(255,255,255,0.7)' },
+                grid: { color: 'rgba(255,255,255,0.05)' }
+            }
         }
+    };
 
-        doughnutChart.onmouseover = function() {
-            doughnutChart.style.transform = 'scale(1.01)';
-        }
+    // 1. Bar Chart (Temp Forecast)
+    const tempCtx = document.getElementById('tempChart').getContext('2d');
+    if (tempChartInstance) tempChartInstance.destroy();
 
-        lineChart.onmouseover = function() {
-            lineChart.style.transform = 'scale(1.01)';
-        }
+    tempChartInstance = new Chart(tempCtx, {
+        type: 'bar',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Forecast (°C)',
+                data: temps,
+                backgroundColor: 'rgba(8, 217, 214, 0.4)', // Cyan transparent
+                borderColor: accentSecondary,
+                borderWidth: 1,
+                borderRadius: 8,
+                hoverBackgroundColor: accentSecondary
+            }]
+        },
+        options: commonOptions
+    });
 
-        //when the mouse is out of the chart, zoom out the chart
-        tempChart.onmouseout = function() {
-            tempChart.style.transform = 'scale(1)';
-        }
+    // 2. Doughnut Chart (Conditions)
+    const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+    if (doughnutChartInstance) doughnutChartInstance.destroy();
 
-        doughnutChart.onmouseout = function() {
-            doughnutChart.style.transform = 'scale(1)';
-        }
-
-        lineChart.onmouseout = function() {
-            lineChart.style.transform = 'scale(1)';
-        }
-
-
-        chartsContainer.appendChild(tempChart);
-        chartsContainer.appendChild(doughnutChart);
-        chartsContainer.appendChild(lineChart);
-
-        
-
-        //add some styles to the charts
-
-            
-            // document.getElementById('tempChart').style.width = '30%';
-            // document.getElementById('tempChart').style.padding = '20px';
-            // document.getElementById('doughnutChart').style.width = '30%';
-            // document.getElementById('lineChart').parentElement.style.width = '30%';
-            // document.getElementById('tempChart').style.backgroundColor = 'white';
-            // document.getElementById('doughnutChart').style.backgroundColor = 'white';
-            // document.getElementById('lineChart').style.backgroundColor = 'white';
-
-            window.addEventListener('resize', function() { //add responsiveness to the charts
-                let chartsContainer = document.getElementsByClassName('charts_container')[0];
-                let tempChart = document.getElementById('tempChart');
-                let doughnutChart = document.getElementById('doughnutChart');
-                let lineChart = document.getElementById('lineChart');
-
-                if (window.innerWidth <= 768) {
-                    chartsContainer.style.width = '100%';
-                    tempChart.style.width = '100%';
-                    doughnutChart.style.width = '100%';
-                    lineChart.style.width = '100%';
-                } else {
-                    chartsContainer.style.width = '33.3%';
-                    tempChart.style.width = '100%';
-                    doughnutChart.style.width = '100%';
-                    lineChart.style.width = '100%';
+    doughnutChartInstance = new Chart(doughnutCtx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(weatherConditions),
+            datasets: [{
+                data: Object.values(weatherConditions),
+                backgroundColor: [
+                    '#ff2e63', // Pink
+                    '#08d9d6', // Teal
+                    '#fbd38d', // Yellow/Orange
+                    '#a8edea'  // Light Cyan
+                ],
+                borderColor: 'rgba(20, 20, 40, 0.8)', // Matches background
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { color: 'white', boxWidth: 12 }
                 }
-                //add responsiveness for 320 x 591px
-                if (window.innerWidth <= 480) {
-                    
-                    chartsContainer.style.width = '100%';
-                    tempChart.style.width = '100%';
-                    doughnutChart.style.width = '100%';
-                    lineChart.style.width = '100%';
-                    tempChart.style.padding = '0';
-                    doughnutChart.style.padding = '0';
-                    lineChart.style.padding = '0';
-                    //set left margin for charts_container
-                    chartsContainer.style.marginLeft = '2px';
-                    
+            }
+        }
+    });
 
-                }
+    // 3. Line Chart (Temp Trend)
+    const lineCtx = document.getElementById('lineChart').getContext('2d');
+    if (lineChartInstance) lineChartInstance.destroy();
 
-            });
-           
-        })
-        .catch(error => {
-            console.log(error);
-        });
+    lineChartInstance = new Chart(lineCtx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Trend',
+                data: temps,
+                backgroundColor: 'rgba(255, 46, 99, 0.1)',
+                borderColor: accentColor,
+                borderWidth: 3,
+                pointBackgroundColor: '#fff',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: commonOptions
+    });
 }

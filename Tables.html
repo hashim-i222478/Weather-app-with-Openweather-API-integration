@@ -1,112 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Five Days Weather Forecast</title>
-    <link rel="stylesheet" href="Tables.css">
+    <!-- Link Global CSS -->
+    <link rel="stylesheet" href="Dashboard.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fa-solid fa-cloud-bolt brand-icon"></i>
+                <h2>Weather Co.</h2>
+            </div>
+            <nav class="nav-links">
+                <a href="Dashboard.html">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="Tables.html" class="active">
+                    <i class="fa-solid fa-table"></i>
+                    <span>Tables</span>
+                </a>
+            </nav>
+        </aside>
 
-    <div class="sidebar">
-        <h2>The Weather Co.</h2>
-        <img src="icon.png" id="sidebar_icon">
-        <nav>
-            <a href="Dashboard.html">Dashboard</a>
-            <a href="Tables.html">Tables</a>
-        </nav>     
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar with Search -->
+            <header class="top-bar">
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="city" placeholder="Search City for 5-Day Forecast...">
+                    <button id="btn" onclick="search_city()">Search</button>
+                </div>
+            </header>
+
+            <!-- Table Section -->
+            <div class="weather-table">
+                <h2>Five Days Weather Forecast</h2>
+
+                <div class="sorting-menu">
+                    <label for="sort-options">Sort/Filter:</label>
+                    <select id="sort-options" onchange="apply_filter()">
+                        <option value="none" selected disabled>Select Option</option>
+                        <option value="asc">Temp Ascending</option>
+                        <option value="desc">Temp Descending</option>
+                        <option value="rain">Rainy Days Only</option>
+                        <option value="highest">Highest Temp Day</option>
+                    </select>
+                </div>
+
+                <table id="forecast_table">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Temperature</th>
+                            <th>Weather</th>
+                            <th>Humidity</th>
+                            <th>Wind Speed</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_body">
+                        <!-- Rows populated by JS -->
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    <button id="prev">Previous</button>
+                    <button id="next">Next</button>
+                </div>
+            </div>
+
+            <!-- Chatbot -->
+            <div class="chatbot-icon" onclick="open_close_chatbot()">
+                <img src="https://cdn-icons-png.flaticon.com/512/8943/8943377.png" alt="Chat">
+            </div>
+
+            <div class="chatbot" id="chatbot" style="display: none;">
+                <div class="chatbot-header">
+                    <h2>AI Assistant</h2>
+                    <button class="close-btn" onclick="open_close_chatbot()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="chatbox" id="chat">
+                    <div class="chat-message bot-message">
+                        <p>Hello! Ask me anything about the weather.</p>
+                    </div>
+                </div>
+                <input type="text" id="question" placeholder="Type your question..." onkeypress="handleEnter(event)">
+                <button id="ask" onclick="Send_chat()" style="display:none;">Send</button>
+                <!-- Hidden send button, usage controlled by Enter key or we can show it -->
+                <!-- Let's show it properly aligned if needed, or rely on input styling -->
+            </div>
+
+        </main>
     </div>
 
-    <div class="main-content">
-
-        <div class="Search-bar">
-            <h2>Search the Weather Forecast</h2><br>
-            <input type="text" id="city" placeholder="Enter City Name to get 5 day forecast">
-            <button id="btn" onclick="search_city()">Search</button>
-        </div>
-
-        <div class="weather-table">
-            <h2>Five Days Weather Forecast</h2>
-            <div class="sorting-menu">
-            <label for="sort-options">Sort/Filter:</label>
-            <select id="sort-options" onchange="apply_filter()">
-                <option value="asc">Show temperatures in ascending order</option>
-                <option value="desc">Show temperatures in descending order</option>
-                <option value="rain">Filter out days without rain</option>
-                <option value="highest">Show the day with the highest temperature</option>
-            </select>
-            </div>
-            <table id="forecast_table">
-            <thead>
-                <tr>
-                <th>Day</th>
-                <th>Temperature</th>
-                <th>Weather</th>
-                <th>Humidity</th>
-                <th>Wind Speed</th>
-                </tr>
-            </thead>
-            
-            <tbody id="table_body">
-
-            </tbody>
-            </table>
-
-            <div class="pagination">
-                <button id="prev" onclick="prevPage()">Previous</button>
-                <button id="next" onclick="nextPage()">Next</button>
-            </div>
-        </div>
-          
-        
-
-        <div class="chatbot-icon" onclick="open_close_chatbot()">
-            <img src="chat.png">
-        </div>
-        <div class="chatbot" id="chatbot" style="display: none;">
-            <div class="chatbot-header">
-            <h2>Chatbot</h2>
-            <button class="close-btn" onclick="open_close_chatbot()">X</button>
-            </div>
-            <div class="chatbox" id="chatbox">
-            <div class="chat" id="chat">
-                <p>Ask me anything</p>
-            </div>
-            </div>
-            <input type="text" id="question" placeholder="Ask me anything related to weather">
-            <button id="ask" onclick="Send_chat()">Send Chat</button>
-        </div>
-        <script>
-            function open_close_chatbot() {
-                var chatbot = document.getElementById('chatbot');
-                if (chatbot.style.display === 'none' || chatbot.style.display === '') {
-                    chatbot.style.display = 'block';
-                    chatbot.style.animation = 'fadeIn 0.5s';
-                } else {
-                    chatbot.style.animation = 'fadeOut 0.5s';
-                    setTimeout(function() {
-                        chatbot.style.display = 'none';
-                    }, 500);
-                }
+    <!-- Scripts -->
+    <script>
+        // Chatbot Toggle
+        function open_close_chatbot() {
+            var chatbot = document.getElementById('chatbot');
+            if (chatbot.style.display === 'none' || chatbot.style.display === '') {
+                chatbot.style.display = 'flex';
+                chatbot.style.animation = 'slideDown 0.4s ease-out reverse';
+                // Actually need to un-reverse or define a separate animation for opening
+                // For simplicity, let's just make it visible, CSS handles the look
+            } else {
+                chatbot.style.display = 'none';
             }
-            var style = document.createElement('style');
-            style.innerHTML = `
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
-                @keyframes fadeOut {
-                    from { opacity: 1; }
-                    to { opacity: 0; }
-                }
-            `;
-            document.head.appendChild(style);
-        </script>
-                    
+        }
 
-    </div>
-         
+        function handleEnter(e) {
+            if (e.key === 'Enter') Send_chat();
+        }
+    </script>
     <script src="table.js"></script>
-
 </body>
+
 </html>

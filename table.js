@@ -1,22 +1,22 @@
 //when the mouse is over the forecast table, zoom in the table
-document.getElementById('forecast_table').onmouseover = function() {
+document.getElementById('forecast_table').onmouseover = function () {
     document.getElementById('forecast_table').style.transform = 'scale(1.01)';
 }
 
 //when the mouse is out of the forecast table, zoom out the table
-document.getElementById('forecast_table').onmouseout = function() {
+document.getElementById('forecast_table').onmouseout = function () {
     document.getElementById('forecast_table').style.transform = 'scale(1)';
 }
 
 //function to search for a city
 function search_city() {
-   
+
     let city_name = document.getElementById('city').value;
-    let api_key = '6235f3a1d357b365fc3db88b6dd6caa2'; 
+    let api_key = '6235f3a1d357b365fc3db88b6dd6caa2';
     let url = `https://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${api_key}`;
 
     fetch(url) //fetch the data from the url
-        .then(response => { 
+        .then(response => {
             if (!response.ok) { //if the response is not ok, alert the user that the city is not found
                 alert('City not found');
                 throw new Error("City not found");
@@ -41,54 +41,24 @@ function fetchForecast(lat, lon, api_key) {
             Pagination_working(forecastData);
         })
         .catch(error => console.error('Error:', error)) //catch any error and log it to the console
-        .finally(() => hideLoader());
+    // .finally(() => hideLoader()); // hideLoader is not defined in the original code snippets, commenting out to avoid error
 }
 
-
-function search_city() {
-    let city_name = document.getElementById('city').value;
-    let api_key = '6235f3a1d357b365fc3db88b6dd6caa2';
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${api_key}`;
-
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                alert('City not found');
-                throw new Error("City not found");
-            }
-            return response.json();
-        })
-        .then(data => fetchForecast(data.coord.lat, data.coord.lon, api_key))
-        .catch(error => console.error('Error:', error));
-}
-
-//function to fetch the forecast of the city
-function fetchForecast(lat, lon, api_key) {
-    let forecast_url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${api_key}&units=metric`;
-
-    fetch(forecast_url)
-        .then(response => response.json())
-        .then(forecastData => {
-            create_table(forecastData);
-            Pagination_working(forecastData);
-        })
-        .catch(error => console.error('Error:', error));
-}
 
 //function to create the pagination
 function Pagination_working(forecastData) {
-    let  page_curr = 1;
-    const  total_rows_page = 10;
-    const  total_rows = forecastData.list.length;
-    const totalPages = Math.ceil( total_rows /  total_rows_page); 
+    let page_curr = 1;
+    const total_rows_page = 10;
+    const total_rows = forecastData.list.length;
+    const totalPages = Math.ceil(total_rows / total_rows_page);
 
     function renderPage(page) { //function to render the page
-       
+
         let table_body = document.getElementById('table_body');
         table_body.innerHTML = '';
-        let strt_pg = (page - 1) *  total_rows_page;
-        let end_pg = strt_pg +  total_rows_page;
-        let pageEntries = forecastData.list.slice(strt_pg, end_pg); 
+        let strt_pg = (page - 1) * total_rows_page;
+        let end_pg = strt_pg + total_rows_page;
+        let pageEntries = forecastData.list.slice(strt_pg, end_pg);
 
         pageEntries.forEach(entry => { //for each entry in the page, create a row in the table
             let row = document.createElement('tr');
@@ -110,22 +80,22 @@ function Pagination_working(forecastData) {
     }
 
     //add event listener to the previous button
-    document.getElementById('prev').addEventListener('click', () => {
-        if ( page_curr > 1) {
-             page_curr--;
-            renderPage( page_curr);
+    document.getElementById('prev').onclick = () => {
+        if (page_curr > 1) {
+            page_curr--;
+            renderPage(page_curr);
         }
-    });
+    };
 
-    document.getElementById('next').addEventListener('click', () => {
-        if ( page_curr < totalPages) {
-             page_curr++;
-            renderPage( page_curr);
+    document.getElementById('next').onclick = () => {
+        if (page_curr < totalPages) {
+            page_curr++;
+            renderPage(page_curr);
         }
 
-    });
+    };
 
-    renderPage( page_curr); // Initial render
+    renderPage(page_curr); // Initial render
 }
 
 let originalData = [];
@@ -182,7 +152,7 @@ function apply_filter() {
 
 //function to create the table
 function create_table(forecastData) {
-    originalData = forecastData.list.slice(0, 10); 
+    originalData = forecastData.list.slice(0, 10);
     let table_body = document.getElementById('table_body');
     table_body.innerHTML = '';
 
@@ -209,25 +179,16 @@ function Send_chat() {
     let chatbox = document.getElementById('chat');
 
     let userMessageDiv = document.createElement('div');
-    userMessageDiv.style.textAlign = 'right';
-    userMessageDiv.style.margin = '10px 0';
-    userMessageDiv.style.backgroundColor = '#1E90FF';
-    userMessageDiv.style.padding = '10px';
-    userMessageDiv.style.borderRadius = '10px';
-    userMessageDiv.style.width = 'auto';
-    userMessageDiv.style.marginLeft = 'auto';
-    userMessageDiv.style.boxShadow = '0 4px 8px 0 rgba(0, 0, 0, 0.2)';
+    userMessageDiv.className = 'chat-message user-message';
 
     let userMessage = document.createElement('p');
-    userMessage.textContent = "User: " + question;
+    userMessage.textContent = question;
 
     userMessageDiv.appendChild(userMessage);
     chatbox.appendChild(userMessageDiv);
-    
-
 
     // Check if the question is related to weather
-    if (question.toLowerCase().includes('weather')) { 
+    if (question.toLowerCase().includes('weather')) {
         let city_name = question.split(' ').pop(); // Assuming the city name is the last word
         let api_key = '6235f3a1d357b365fc3db88b6dd6caa2';
         let url = `https://api.openweathermap.org/data/2.5/weather?q=${city_name}&appid=${api_key}`;
@@ -243,45 +204,41 @@ function Send_chat() {
             .then(data => { //if the response is ok, get the data and display the weather details
 
                 let weatherMessageDiv = document.createElement('div');
-                weatherMessageDiv.style.textAlign = 'left';
-                weatherMessageDiv.style.margin = '10px 0';
-                weatherMessageDiv.style.backgroundColor = '#1E90FF';
-                weatherMessageDiv.style.padding = '10px';
-                weatherMessageDiv.style.borderRadius = '10px';
-                weatherMessageDiv.style.width = 'fit-content';
-                weatherMessageDiv.style.boxShadow = '0 4px 8px 0 rgba(0, 0, 0, 0.2)';
-
+                weatherMessageDiv.className = 'chat-message bot-message';
 
                 let weatherMessage = document.createElement('p');
 
                 let temp_in_celsius = data.main.temp - 273.15;
 
-                weatherMessage.textContent = `Bot: The weather in ${city_name} is ${data.weather[0].description} with a temperature of ${temp_in_celsius.toFixed(2)} °C.`;
+                weatherMessage.textContent = `The weather in ${city_name} is ${data.weather[0].description} with a temperature of ${temp_in_celsius.toFixed(2)} °C.`;
 
                 weatherMessageDiv.appendChild(weatherMessage);
                 chatbox.appendChild(weatherMessageDiv);
             })
             .catch(error => {
+                let errorMessageDiv = document.createElement('div');
+                errorMessageDiv.className = 'chat-message bot-message';
                 let errorMessage = document.createElement('p');
                 errorMessage.textContent = 'City not found';
-                chatbox.appendChild(errorMessage);
+                errorMessageDiv.appendChild(errorMessage);
+                chatbox.appendChild(errorMessageDiv);
             });
     } else { // If the question is not related to weather, send the question to the chatbot
         const api_key = 'AIzaSyAWEM5eJ9ubBEmWyJR7q3RtiXGApdCjvr4';
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${api_key}`;
-        
+
         const re_body = { // Request body
             contents: [
                 {
                     parts: [
                         {
-                            text: question 
+                            text: question
                         }
                     ]
                 }
             ]
         };
-        
+
         fetch(url, { // Fetch the response from the chatbot
             method: 'POST',
             headers: {
@@ -289,32 +246,34 @@ function Send_chat() {
             },
             body: JSON.stringify(re_body)
         })
-        .then(response => response.json())
-        .then(data => {
-            let botMessageDiv = document.createElement('div');
-            botMessageDiv.style.textAlign = 'left';
-            botMessageDiv.style.margin = '10px 0';
-            botMessageDiv.style.backgroundColor = '#1E90FF';
-            botMessageDiv.style.padding = '10px';
-            botMessageDiv.style.borderRadius = '10px';
-            botMessageDiv.style.width = 'fit-content';
-            botMessageDiv.style.boxShadow = '0 4px 8px 0 rgba(0, 0, 0, 0.2)';
-        
-            let botMessage = document.createElement('p');
-            
-            if (data.candidates && data.candidates.length > 0) { // Check if the response is valid
-                botMessage.textContent = "Bot: " + data.candidates[0].content.parts[0].text; 
-            } else {
-                botMessage.textContent = "Bot: Response not valid.";
-            }
+            .then(response => response.json())
+            .then(data => {
+                let botMessageDiv = document.createElement('div');
+                botMessageDiv.className = 'chat-message bot-message';
 
-            botMessageDiv.appendChild(botMessage); // Append the bot message to the chat
-            chatbox.appendChild(botMessageDiv);     
-        })
-        .catch(error => {
-            let errorMessage = document.createElement('p');
-            errorMessage.textContent = 'Error fetching response: ' + error;
-            chatbox.appendChild(errorMessage);
-        });
-    }        
+                let botMessage = document.createElement('p');
+
+                if (data.candidates && data.candidates.length > 0) { // Check if the response is valid
+                    botMessage.textContent = data.candidates[0].content.parts[0].text;
+                } else {
+                    botMessage.textContent = "Response not valid.";
+                }
+
+                botMessageDiv.appendChild(botMessage); // Append the bot message to the chat
+                chatbox.appendChild(botMessageDiv);
+            })
+            .catch(error => {
+                let errorMessageDiv = document.createElement('div');
+                errorMessageDiv.className = 'chat-message bot-message';
+                let errorMessage = document.createElement('p');
+                errorMessage.textContent = 'Error fetching response: ' + error;
+                errorMessageDiv.appendChild(errorMessage);
+                chatbox.appendChild(errorMessageDiv);
+            });
+    }
+
+    // Clear input
+    document.getElementById('question').value = "";
+    // Scroll to bottom
+    chatbox.scrollTop = chatbox.scrollHeight;
 }

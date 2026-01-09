@@ -1,56 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Dashboard</title>
-    <link rel="stylesheet" href="Dashboard.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="Dashboard.css">
 </head>
+
 <body>
-    
-    <div class="sidebar">
-        <h2>The Weather Co.</h2>
-        <img src="icon.png" id="sidebar_icon">
-        <nav>
-            <a href="Dashboard.html">Dashboard</a>
-            <a href="Tables.html">Tables</a>
-        </nav>
 
-                   
-    </div>
-
-    <div class="main-content">
-        <div class="weather-widget">
-            <h2>Weather Details</h2>
-            <input type="text" id="city" placeholder="Enter City Name to Get Weather Details">
-            <button id="btn" onclick="get_Weather_details(), get_forecast()">Search</button>
-            <button id="toggleTemp" onclick="toggleTemperature()">°C/°F</button>
-           
-            <div class="weather-details">
-                <div class="weather_icon">
-                    <h3>Weather: </h3>
-                    <img src="" id="icon">
-                </div>
-                <h3 id="city-name">City Name</h3>
-                <h3 id="temp">Temperature</h3>
-                <h3 id="weather">Weather conditions</h3>
-                <h3 id="humidity">Humidity</h3>
-                <h3 id="wind">Wind Speed</h3>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fa-solid fa-cloud-bolt brand-icon"></i>
+                <h2>WeatherCo</h2>
             </div>
-        </div>
-    
 
-        <div class="charts_container">
-            <canvas id="tempChart"></canvas>
-            <canvas id="doughnutChart"></canvas>
-            <canvas id="lineChart"></canvas>
+            <nav class="nav-links">
+                <a href="Dashboard.html" class="active">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard
+                </a>
+                <a href="Tables.html">
+                    <i class="fa-solid fa-table"></i> Tables
+                </a>
+            </nav>
+        </aside>
 
-        </div>
+        <!-- Main Content -->
+        <main class="main-content">
 
+            <header class="top-bar">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="city" placeholder="Search for a city...">
+                    <button id="btn" onclick="get_Weather_details(); get_forecast()">Search</button>
+                </div>
+                <button id="toggleTemp" class="unit-toggle" onclick="toggleTemperature()">
+                    <span class="active-unit">°C</span> / <span>°F</span>
+                </button>
+            </header>
+
+            <!-- Current Weather Card (Horizontal) -->
+            <div class="weather-card current-weather-horizontal">
+                <div class="horizontal-left">
+                    <div class="card-header">
+                        <h3>Current Weather</h3>
+                        <p id="date-time">Today</p>
+                    </div>
+                </div>
+
+                <div class="horizontal-center">
+                    <div class="weather-info-horizontal">
+                        <span id="temp">--°C</span>
+                        <div class="weather-status">
+                            <img src="" id="icon" alt="Weather Icon" class="hidden">
+                            <span id="weather">Condition</span>
+                        </div>
+                    </div>
+                    <h2 id="city-name">Select a City</h2>
+                </div>
+
+                <div class="horizontal-right">
+                    <div class="weather-details-grid-horizontal">
+                        <div class="detail-item">
+                            <i class="fa-solid fa-droplet"></i>
+                            <div>
+                                <span class="label">Humidity</span>
+                                <span id="humidity">--%</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fa-solid fa-wind"></i>
+                            <div>
+                                <span class="label">Wind Speed</span>
+                                <span id="wind">-- m/s</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Charts Section (Full Width Now) -->
+                <div class="charts-section">
+                    <div class="chart-card">
+                        <h3>Temperature Forecast (5 Days)</h3>
+                        <div class="chart-container">
+                            <canvas id="tempChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-row">
+                        <div class="chart-card half-width">
+                            <h3>Conditions Distribution</h3>
+                            <div class="chart-container">
+                                <canvas id="doughnutChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card half-width">
+                            <h3>Temp Trend</h3>
+                            <div class="chart-container">
+                                <canvas id="lineChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
     </div>
-        
-   
+
     <script src="script.js"></script>
 </body>
+
 </html>
